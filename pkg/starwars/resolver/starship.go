@@ -2,5 +2,8 @@ package resolver
 
 type StarshipResolver struct {
 	id string
-	name
+	name string
+	length float64
 }
+
+

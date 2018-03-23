@@ -1,14 +1,14 @@
 package resolver
 
-type ReviewsResolver struct {
+type ReviewResolver struct {
 	stars int
 	commentary *string
 }
 
-func(r *ReviewsResolver) Stars() int{
+func(r *ReviewResolver) Stars() int{
 	return r.stars
 }
 
-func (r *ReviewsResolver) Commentary() *string{
+func (r *ReviewResolver) Commentary() *string{
 	return r.commentary
 }

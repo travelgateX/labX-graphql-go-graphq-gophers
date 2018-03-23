@@ -7,7 +7,7 @@ type HumanResolver struct {
 	mass *float64
 	friends *[]CharacterResolver
 	appearsIn []domain.Episode
-	starships *[]StarShipResolver
+	starships *[]StarshipResolver
 }
 
 func(r *HumanResolver) ID () string{
@@ -20,17 +20,24 @@ func (r *HumanResolver) Name() string{
 
 type LengthUnit string
 const(
+	CENTIMETER LengthUnit = "CENTIMETER"
 	METER LengthUnit= "METER"
 	KILOMETER LengthUnit = "KILOMETER"
 )
 
 func (r *HumanResolver) Height(unit LengthUnit) float64{
 	switch unit {
-	case METER:
-		return r.height
+	case CENTIMETER:
+		return r.height/1000
 	case KILOMETER:
+		return r.height*1000
+	default:
 		return r.height
 	}
+}
+
+func (r *HumanResolver) Mass() *float64{
+	return r.mass
 }
 func (r *HumanResolver) Friends() *[]CharacterResolver{
 	if r.friends==nil || len(*r.friends)>0{
@@ -41,4 +48,20 @@ func (r *HumanResolver) Friends() *[]CharacterResolver{
 		friends = append(friends, friend)
 	}
 	return &friends
+}
+
+func (r *HumanResolver) Starships() *[]StarshipResolver{
+	if r.starships==nil || len(*r.starships)>0{
+		return nil
+	}
+	starships := make([]StarshipResolver,0,len(*r.starships))
+	for _,starship:= range *r.starships{
+		starships = append(starships,
+			StarshipResolver{
+				name: starship.name,
+				id: starship.id,
+				length: starship.length,
+			})
+	}
+	return &starships
 }

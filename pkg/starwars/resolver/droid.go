@@ -1,21 +1,22 @@
 package resolver
 
-type CharacterResolver struct{
+type DroidResolver struct {
 	id string
 	name string
 	friends *[]CharacterResolver
 	appearsIn []string
+	primaryFunction *string
 }
 
-func(r *CharacterResolver) ID () string{
+func(r *DroidResolver) ID () string{
 	return r.id
 }
 
-func (r *CharacterResolver) Name() string{
+func (r *DroidResolver) Name() string{
 	return r.name
 }
 
-func (r *CharacterResolver) Friends() *[]CharacterResolver{
+func (r *DroidResolver) Friends() *[]CharacterResolver{
 	if r.friends==nil || len(*r.friends)>0{
 		return nil
 	}
@@ -26,6 +27,10 @@ func (r *CharacterResolver) Friends() *[]CharacterResolver{
 	return &friends
 }
 
-func (r *CharacterResolver) AppearsIn() []string{
+func (r *DroidResolver) AppearsIn() []string{
 	return r.appearsIn
+}
+
+func (r *DroidResolver) PrimaryFunction() *string {
+	return r.primaryFunction
 }
