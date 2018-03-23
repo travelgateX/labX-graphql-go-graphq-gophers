@@ -1,25 +1,35 @@
 package starwars
 
 type Service interface {
-	Hero(*Episode) *Character
-	Reviews(*Episode) []*Review
+	Hero(episode string) *Character
+	Reviews(episode string) []*Review
 	Search(text string) []*SearchResult
 	Character(id string) *Character
 	Droid(id string) *Droid
 	Human(id string) *Human
 	Starship(id string) *Starship
-	CreateReview(*Episode, *ReviewInput) *Review
+	CreateReview(episode string, ri *ReviewInput) *Review
 }
 
-type ReviewInput struct{}
+type Review struct {
+	Stars      int
+	Commentary *string
+}
 
-type Review struct{}
+type ReviewInput struct {
+	Review
+}
 
-type SearchResult struct{}
+// SearchResult is an union of Human | Droid | Starship
+type SearchResult interface{}
 
-type Character struct{}
-
-type Episode struct{}
+type Character struct {
+	ID      string
+	Name    string
+	Friends *[]*Character
+	// set of episodes
+	AppearsIn []string
+}
 
 type Droids struct {
 	DroidList []Droid `json:"droids"`

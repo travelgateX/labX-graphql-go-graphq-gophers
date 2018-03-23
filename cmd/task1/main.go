@@ -17,6 +17,7 @@ func main() {
 	}
 
 	b, err := ioutil.ReadAll(f)
+	f.Close()
 	if err != nil {
 		panic(err)
 	}
