@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/graph-gophers/graphql-go"
 	"io/ioutil"
-	"labX-graphql-go-graphq-gophers/cmd"
-	"labX-graphql-go-graphq-gophers/pkg/gopher"
+	"labX/labX-graphql-go-graphq-gophers/cmd"
+	"labX/labX-graphql-go-graphq-gophers/pkg/gopher"
 	"net/http"
 	"os"
+
+	"github.com/graph-gophers/graphql-go"
 )
 
 func main() {
@@ -36,7 +37,7 @@ func main() {
 		}, {
 			Name:          "ServiceGraphiQL",
 			Method:        "GET",
-			Pattern:       "/query",
+			Pattern:       "/",
 			GzipMandatory: false,
 			HandlerFunc:   gopher.GraphiQLHandler(),
 		},
