@@ -1,11 +1,15 @@
 package resolver
 
+import (
+	"labX-graphql-go-graphq-gophers/pkg/starwars"
+)
+
 type HumanResolver struct {
 	id        string
 	name      string
 	height    float64
 	mass      *float64
-	friends   *[]CharacterResolver
+	friends   *[]*starwars.Character
 	appearsIn []string
 	starships *[]StarshipResolver
 }
@@ -40,13 +44,18 @@ func (r *HumanResolver) Height(unit LengthUnit) float64 {
 func (r *HumanResolver) Mass() *float64 {
 	return r.mass
 }
-func (r *HumanResolver) Friends() *[]CharacterResolver {
+func (r *HumanResolver) Friends() *[]starwars.Character {
 	if r.friends == nil || len(*r.friends) > 0 {
 		return nil
 	}
-	friends := make([]CharacterResolver, 0, len(*r.friends))
+	friends := make([]starwars.Character, 0, len(*r.friends))
 	for _, friend := range *r.friends {
-		friends = append(friends, friend)
+		friends = append(friends, starwars.Character{
+			ID:        friend.ID,
+			Friends:   friend.Friends,
+			AppearsIn: friend.AppearsIn,
+			Name:      friend.Name,
+		})
 	}
 	return &friends
 }

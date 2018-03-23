@@ -37,7 +37,7 @@ type Droids struct {
 
 type Droid struct {
 	AppearsIn       []string `json:"AppearsIn"`
-	Friends         []string `json:"Friends"`
+	Friends         *[]*Character `json:"Friends"`
 	ID              string   `json:"ID"`
 	Name            string   `json:"Name"`
 	PrimaryFunction string   `json:"PrimaryFunction"`
@@ -57,7 +57,7 @@ type Humans struct {
 
 type Human struct {
 	AppearsIn []string `json:"AppearsIn"`
-	Friends   []string `json:"Friends"`
+	Friends   *[]*Character `json:"Friends"`
 	Height    float64  `json:"Height"`
 	ID        string   `json:"ID"`
 	Mass      int      `json:"Mass"`
