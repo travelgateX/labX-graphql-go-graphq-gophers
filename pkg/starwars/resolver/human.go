@@ -6,7 +6,7 @@ type HumanResolver struct {
 	height    float64
 	mass      *float64
 	friends   *[]CharacterResolver
-	appearsIn []domain.Episode
+	appearsIn []string
 	starships *[]StarshipResolver
 }
 

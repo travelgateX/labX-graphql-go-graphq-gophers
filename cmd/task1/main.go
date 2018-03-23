@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"labX/labX-graphql-go-graphq-gophers/cmd"
 	"labX/labX-graphql-go-graphq-gophers/pkg/gopher"
+	"labX/labX-graphql-go-graphq-gophers/pkg/starwars/resolver"
 	"net/http"
 	"os"
 
@@ -22,8 +23,10 @@ func main() {
 		panic(err)
 	}
 
+	// TODO: coger implementacion por ficheros
+	s := new(starwars.Service)
 	// TODO: Resolver
-	schema, err := graphql.ParseSchema(string(b), nil)
+	schema, err := graphql.ParseSchema(string(b), resolver.QueryResolver{s})
 	if err != nil {
 		panic(err)
 	}
