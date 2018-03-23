@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
 	"net/http"
 	"strings"
+
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 )
 
 type Route struct {
@@ -21,7 +22,7 @@ func NewRouter(routes []Route) http.Handler {
 
 	for _, route := range routes {
 		var h http.Handler = route.HandlerFunc
-		h = gzipValidate(h, route.GzipMandatory)
+		// h = gzipValidate(h, route.GzipMandatory)
 		h = handlers.CompressHandler(h)
 
 		router.

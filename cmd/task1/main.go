@@ -35,7 +35,7 @@ func main() {
 			Name:          "ServiceGraphQL",
 			Method:        "POST",
 			Pattern:       "/query",
-			GzipMandatory: true,
+			GzipMandatory: false,
 			HandlerFunc:   gopher.SchemaHandler(schema),
 		}, {
 			Name:          "ServiceGraphiQL",
