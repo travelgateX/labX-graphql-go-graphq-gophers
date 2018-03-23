@@ -49,11 +49,18 @@ func (r *HumanResolver) Friends() *[]*CharacterResolver {
 	}
 
 	friends := make([]*CharacterResolver, 0, len(*r.h.Friends))
-	for _, friend := range *r.h.Friends {
+	for i := range *r.h.Friends {
+		friend := (*r.h.Friends)[i]
 		c := r.s.Character(friend)
 		if c != nil {
-			hr := HumanResolver{h: r.h, s: r.s}
-			friends = append(friends, &CharacterResolver{&hr})
+			switch v := c.(type) {
+			case *starwars.Droid:
+				dr := DroidResolver{d: v, s: r.s}
+				friends = append(friends, &CharacterResolver{&dr})
+			case *starwars.Human:
+				hr := HumanResolver{h: v, s: r.s}
+				friends = append(friends, &CharacterResolver{&hr})
+			}
 		}
 	}
 	return &friends
