@@ -5,7 +5,7 @@ import "labX-graphql-go-graphq-gophers/pkg/starwars"
 type CharacterResolver struct {
 	id        string
 	name      string
-	friends   *[]*starwars.Character
+	friends   *[]*CharacterResolver
 	appearsIn []string
 }
 
@@ -23,11 +23,11 @@ func (r *CharacterResolver) Friends() *[]starwars.Character {
 	}
 	friends := make([]starwars.Character, 0, len(*r.friends))
 	for _, friend := range *r.friends {
-		friends = append(friends, starwars.Character{
-			ID:        friend.ID,
-			Name:      friend.Name,
-			AppearsIn: friend.AppearsIn,
-			Friends:   friend.Friends,
+		friends = append(friends, CharacterResolver{
+			ID:        friend.id,
+			Name:      friend.name,
+			AppearsIn: friend.appearsIn,
+			Friends:   friend.friends,
 		})
 	}
 	return &friends

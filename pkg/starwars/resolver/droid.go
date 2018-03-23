@@ -1,7 +1,5 @@
 package resolver
 
-import "labX-graphql-go-graphq-gophers/pkg/starwars"
-
 type DroidResolver struct {
 	id              string
 	name            string
@@ -18,17 +16,17 @@ func (r *DroidResolver) Name() string {
 	return r.name
 }
 
-func (r *DroidResolver) Friends() *[]starwars.Character {
+func (r *DroidResolver) Friends() *[]CharacterResolver {
 	if r.friends == nil || len(*r.friends) > 0 {
 		return nil
 	}
-	friends := make([]starwars.Character, 0, len(*r.friends))
+	friends := make([]CharacterResolver, 0, len(*r.friends))
 	for _, friend := range *r.friends {
-		friends = append(friends, starwars.Character{
-			Name:      friend.Name,
-			ID:        friend.ID,
-			AppearsIn: friend.AppearsIn,
-			Friends:   friend.Friends,
+		friends = append(friends, CharacterResolver{
+			name:      friend.name,
+			id:        friend.id,
+			appearsIn: friend.appearsIn,
+			friends:   friend.friends,
 		})
 	}
 	return &friends

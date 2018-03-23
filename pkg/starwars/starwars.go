@@ -36,11 +36,11 @@ type Droids struct {
 }
 
 type Droid struct {
-	AppearsIn       []string `json:"AppearsIn"`
+	AppearsIn       []string      `json:"AppearsIn"`
 	Friends         *[]*Character `json:"Friends"`
-	ID              string   `json:"ID"`
-	Name            string   `json:"Name"`
-	PrimaryFunction string   `json:"PrimaryFunction"`
+	ID              string        `json:"ID"`
+	Name            string        `json:"Name"`
+	PrimaryFunction string        `json:"PrimaryFunction"`
 }
 type Films struct {
 	FilimList []Film `json:"films"`
@@ -56,13 +56,13 @@ type Humans struct {
 }
 
 type Human struct {
-	AppearsIn []string `json:"AppearsIn"`
+	AppearsIn []string      `json:"AppearsIn"`
 	Friends   *[]*Character `json:"Friends"`
-	Height    float64  `json:"Height"`
-	ID        string   `json:"ID"`
-	Mass      int      `json:"Mass"`
-	Name      string   `json:"Name"`
-	Starships []string `json:"Starships"`
+	Height    float64       `json:"Height"`
+	ID        string        `json:"ID"`
+	Mass      int           `json:"Mass"`
+	Name      string        `json:"Name"`
+	Starships []string      `json:"Starships"`
 }
 
 type Starships struct {
