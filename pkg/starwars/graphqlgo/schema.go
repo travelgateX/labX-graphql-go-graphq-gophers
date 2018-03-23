@@ -2,83 +2,16 @@ package graphqlgo
 
 import (
 	"labX-graphql-go-graphq-gophers/pkg/starwars"
-	"strconv"
 
 	"github.com/graphql-go/graphql"
 )
 
 var (
-	Luke           starwars.Character
-	Vader          starwars.Character
-	Han            starwars.Character
-	Leia           starwars.Character
-	Tarkin         starwars.Character
-	Threepio       starwars.Character
-	Artoo          starwars.Character
-	HumanData      map[int]starwars.Character
-	DroidData      map[int]starwars.Character
-	StarWarsSchema graphql.Schema
-
 	humanType *graphql.Object
 	droidType *graphql.Object
 )
 
 func NewSchema(service starwars.Service) graphql.Schema {
-	Luke = starwars.Character{
-		ID:        "1000",
-		Name:      "Luke Skywalker",
-		AppearsIn: []string{"4", "5", "6"},
-	}
-	Vader = starwars.Character{
-		ID:        "1001",
-		Name:      "Darth Vader",
-		AppearsIn: []string{"4", "5", "6"},
-	}
-	Han = starwars.Character{
-		ID:        "1002",
-		Name:      "Han Solo",
-		AppearsIn: []string{"4", "5", "6"},
-	}
-	Leia = starwars.Character{
-		ID:        "1003",
-		Name:      "Leia Organa",
-		AppearsIn: []string{"4", "5", "6"},
-	}
-	Tarkin = starwars.Character{
-		ID:        "1004",
-		Name:      "Wilhuff Tarkin",
-		AppearsIn: []string{"4"},
-	}
-	Threepio = starwars.Character{
-		ID:        "2000",
-		Name:      "C-3PO",
-		AppearsIn: []string{"4", "5", "6"},
-	}
-	Artoo = starwars.Character{
-		ID:        "2001",
-		Name:      "R2-D2",
-		AppearsIn: []string{"4", "5", "6"},
-	}
-
-	// Luke.Friends = append(Luke.Friends, []starwars.Character{Han, Leia, Threepio, Artoo}...)
-	// Vader.Friends = append(Luke.Friends, []starwars.Character{Tarkin}...)
-	// Han.Friends = append(Han.Friends, []starwars.Character{Luke, Leia, Artoo}...)
-	// Leia.Friends = append(Leia.Friends, []starwars.Character{Luke, Han, Threepio, Artoo}...)
-	// Tarkin.Friends = append(Tarkin.Friends, []starwars.Character{Vader}...)
-	// Threepio.Friends = append(Threepio.Friends, []starwars.Character{Luke, Han, Leia, Artoo}...)
-	// Artoo.Friends = append(Artoo.Friends, []starwars.Character{Luke, Han, Leia}...)
-	HumanData = map[int]starwars.Character{
-		1000: Luke,
-		1001: Vader,
-		1002: Han,
-		1003: Leia,
-		1004: Tarkin,
-	}
-	DroidData = map[int]starwars.Character{
-		2000: Threepio,
-		2001: Artoo,
-	}
-
 	episodeEnum := graphql.NewEnum(graphql.EnumConfig{
 		Name:        "Episode",
 		Description: "One of the films in the Star Wars Trilogy",
@@ -116,9 +49,8 @@ func NewSchema(service starwars.Service) graphql.Schema {
 			},
 		},
 		ResolveType: func(p graphql.ResolveTypeParams) *graphql.Object {
-			if character, ok := p.Value.(starwars.Character); ok {
-				id, _ := strconv.Atoi(character.ID)
-				human := GetHuman(id)
+			if character, ok := p.Value.(*starwars.Human); ok {
+				human := service.Human(character.ID)
 				if human.ID != "" {
 					return humanType
 				}
@@ -139,7 +71,7 @@ func NewSchema(service starwars.Service) graphql.Schema {
 				Type:        graphql.NewNonNull(graphql.String),
 				Description: "The id of the human.",
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					if human, ok := p.Source.(starwars.Human); ok {
+					if human, ok := p.Source.(*starwars.Human); ok {
 						return human.ID, nil
 					}
 					return nil, nil
@@ -149,7 +81,7 @@ func NewSchema(service starwars.Service) graphql.Schema {
 				Type:        graphql.String,
 				Description: "The name of the human.",
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					if human, ok := p.Source.(starwars.Human); ok {
+					if human, ok := p.Source.(*starwars.Human); ok {
 						return human.Name, nil
 					}
 					return nil, nil
@@ -159,8 +91,12 @@ func NewSchema(service starwars.Service) graphql.Schema {
 				Type:        graphql.NewList(characterInterface),
 				Description: "The friends of the human, or an empty list if they have none.",
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					if human, ok := p.Source.(starwars.Human); ok {
-						return human.Friends, nil
+					if human, ok := p.Source.(*starwars.Human); ok {
+						var list []interface{}
+						for _, char := range *human.Friends {
+							list = append(list, service.Character(char))
+						}
+						return list, nil
 					}
 					return []interface{}{}, nil
 				},
@@ -169,8 +105,12 @@ func NewSchema(service starwars.Service) graphql.Schema {
 				Type:        graphql.NewList(episodeEnum),
 				Description: "Which movies they appear in.",
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					if human, ok := p.Source.(starwars.Human); ok {
-						return human.AppearsIn, nil
+					if human, ok := p.Source.(*starwars.Human); ok {
+						var list []interface{}
+						for _, char := range human.AppearsIn {
+							list = append(list, service.Character(char))
+						}
+						return list, nil
 					}
 					return nil, nil
 				},
@@ -188,7 +128,7 @@ func NewSchema(service starwars.Service) graphql.Schema {
 				Type:        graphql.NewNonNull(graphql.String),
 				Description: "The id of the droid.",
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					if droid, ok := p.Source.(starwars.Character); ok {
+					if droid, ok := p.Source.(*starwars.Droid); ok {
 						return droid.ID, nil
 					}
 					return nil, nil
@@ -198,7 +138,7 @@ func NewSchema(service starwars.Service) graphql.Schema {
 				Type:        graphql.String,
 				Description: "The name of the droid.",
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					if droid, ok := p.Source.(starwars.Character); ok {
+					if droid, ok := p.Source.(*starwars.Droid); ok {
 						return droid.Name, nil
 					}
 					return nil, nil
@@ -208,7 +148,7 @@ func NewSchema(service starwars.Service) graphql.Schema {
 				Type:        graphql.NewList(episodeEnum),
 				Description: "Which movies they appear in.",
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					if droid, ok := p.Source.(starwars.Character); ok {
+					if droid, ok := p.Source.(*starwars.Droid); ok {
 						return droid.AppearsIn, nil
 					}
 					return nil, nil
@@ -218,7 +158,7 @@ func NewSchema(service starwars.Service) graphql.Schema {
 				Type:        graphql.String,
 				Description: "The primary function of the droid.",
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					if droid, ok := p.Source.(starwars.Droid); ok {
+					if droid, ok := p.Source.(*starwars.Droid); ok {
 						return droid.PrimaryFunction, nil
 					}
 					return nil, nil
@@ -243,7 +183,7 @@ func NewSchema(service starwars.Service) graphql.Schema {
 					},
 				},
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					return GetHero(p.Args["episode"]), nil
+					return service.Hero(p.Args["episode"].(string)), nil
 				},
 			},
 			"human": &graphql.Field{
@@ -255,11 +195,7 @@ func NewSchema(service starwars.Service) graphql.Schema {
 					},
 				},
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					id, err := strconv.Atoi(p.Args["id"].(string))
-					if err != nil {
-						return nil, err
-					}
-					return GetHuman(id), nil
+					return service.Human(p.Args["id"].(string)), nil
 				},
 			},
 			"droid": &graphql.Field{
@@ -271,7 +207,7 @@ func NewSchema(service starwars.Service) graphql.Schema {
 					},
 				},
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					return GetDroid(p.Args["id"].(int)), nil
+					return service.Droid(p.Args["id"].(string)), nil
 				},
 			},
 		},
@@ -281,23 +217,4 @@ func NewSchema(service starwars.Service) graphql.Schema {
 	})
 
 	return ret
-}
-
-func GetHuman(id int) starwars.Character {
-	if human, ok := HumanData[id]; ok {
-		return human
-	}
-	return starwars.Character{}
-}
-func GetDroid(id int) starwars.Character {
-	if droid, ok := DroidData[id]; ok {
-		return droid
-	}
-	return starwars.Character{}
-}
-func GetHero(episode interface{}) interface{} {
-	if episode == 5 {
-		return Luke
-	}
-	return Artoo
 }

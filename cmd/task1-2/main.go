@@ -9,7 +9,10 @@ import (
 )
 
 func main() {
-	s, _ := mock.NewService()
+	s, err := mock.NewService()
+	if err != nil {
+		panic(err)
+	}
 	// TODO: Resolver
 	schema := starwarsGraphql.NewSchema(s)
 
