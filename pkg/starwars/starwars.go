@@ -15,6 +15,12 @@ type Service interface {
 	CreateReview(episode string, ri *ReviewInput) *Review
 }
 
+type Service2 interface {
+	Species(id string) []*Specie
+	Homeworld(id string) *Homeworld
+	AllHomeworld() []*Homeworld
+}
+
 type Review struct {
 	Stars      int
 	Commentary *string
@@ -58,6 +64,7 @@ type Droid struct {
 	Character
 	PrimaryFunction string `json:"PrimaryFunction"`
 }
+
 type Films struct {
 	FilimList []Film `json:"films"`
 }
@@ -116,4 +123,16 @@ type Starship struct {
 	ID     string  `json:"ID"`
 	Length float64 `json:"Length"`
 	Name   string  `json:"Name"`
+}
+
+type Specie struct {
+	Designation string    `json:"designation"`
+	Language    string    `json:"language"`
+	Subespecies *[]Specie `json:"subEspecies"`
+	Homeworld   Homeworld `json:"homeworld"`
+}
+
+type Homeworld struct {
+	Name    string    `json:"name"`
+	Species *[]Specie `json:"species"`
 }
