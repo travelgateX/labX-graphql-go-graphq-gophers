@@ -2,7 +2,7 @@ package resolver
 
 import "github.com/travelgateX/labX-graphql-go-graphq-gophers/pkg/starwars"
 
-type QueryResolver struct{
+type QueryResolver struct {
 	service starwars.Service
 }
 
