@@ -1,3 +1,8 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
 # A character from the Star Wars universe
 interface Character {
   # The ID of the character

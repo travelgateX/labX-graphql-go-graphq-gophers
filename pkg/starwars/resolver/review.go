@@ -1,14 +1,17 @@
 package resolver
 
+import (
+	"labX-graphql-go-graphq-gophers/pkg/starwars"
+)
+
 type ReviewResolver struct {
-	stars      int
-	commentary *string
+	r *starwars.Review
 }
 
-func (r *ReviewResolver) Stars() int {
-	return r.stars
+func (r *ReviewResolver) Stars() int32 {
+	return int32(r.r.Stars)
 }
 
 func (r *ReviewResolver) Commentary() *string {
-	return r.commentary
+	return r.r.Commentary
 }

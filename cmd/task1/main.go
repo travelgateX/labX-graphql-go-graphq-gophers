@@ -2,10 +2,10 @@ package main
 
 import (
 	"io/ioutil"
-	"labX/labX-graphql-go-graphq-gophers/cmd"
-	"labX/labX-graphql-go-graphq-gophers/pkg/gopher"
-	"labX/labX-graphql-go-graphq-gophers/pkg/starwars/mock"
-	"labX/labX-graphql-go-graphq-gophers/pkg/starwars/resolver"
+	"labX-graphql-go-graphq-gophers/cmd"
+	"labX-graphql-go-graphq-gophers/pkg/gopher"
+	"labX-graphql-go-graphq-gophers/pkg/starwars/mock"
+	"labX-graphql-go-graphq-gophers/pkg/starwars/resolver"
 	"net/http"
 	"os"
 
@@ -25,10 +25,10 @@ func main() {
 	}
 
 	s, err := mock.NewService()
-	schema, err := graphql.ParseSchema(string(b), resolver.QueryResolver{})
 	if err != nil {
 		panic(err)
 	}
+	schema := graphql.MustParseSchema(string(b), &resolver.Resolver{s})
 
 	routes := []cmd.Route{
 		{

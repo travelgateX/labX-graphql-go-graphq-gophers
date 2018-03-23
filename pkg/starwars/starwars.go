@@ -5,10 +5,10 @@ import (
 )
 
 type Service interface {
-	Hero(episode string) *Character
+	Hero(episode string) interface{}
 	Reviews(episode string) []*Review
 	Search(text string) []SearchResult
-	Character(id string) *Character
+	Character(id string) interface{}
 	Droid(id string) *Droid
 	Human(id string) *Human
 	Starship(id string) *Starship
@@ -28,28 +28,32 @@ type ReviewInput struct {
 type SearchResult interface{}
 
 type Character struct {
-	ID      string        `json:"ID"`
-	Name    string        `json:"Name"`
-	Friends *[]*Character `json:"Friends"`
+	ID      string    `json:"ID"`
+	Name    string    `json:"Name"`
+	Friends *[]string `json:"Friends"`
 	// set of episodes
 	AppearsIn []string `json:"AppearsIn"`
 }
 
 type Droids struct {
-	DroidList map[string]*Droid `json:"droids"`
+	List []*Droid `json:"droids"`
 }
 
-func (d *Droids) UnmarshalJSON(data []byte) error {
-	var s []*Droid
-	err := json.Unmarshal(data, &s)
+type DroidMap struct {
+	M map[string]*Droid
+}
+
+func (d *DroidMap) UnmarshalJSON(data []byte) error {
+	var droids Droids
+	err := json.Unmarshal(data, &droids)
 	if err != nil {
 		return err
 	}
 
-	d.DroidList = make(map[string]*Droid, len(s))
-	for i := range s {
-		droid := s[i]
-		d.DroidList[droid.ID] = droid
+	d.M = make(map[string]*Droid, len(droids.List))
+	for i := range droids.List {
+		droid := droids.List[i]
+		d.M[droid.ID] = droid
 	}
 	return nil
 }
@@ -68,20 +72,24 @@ type Film struct {
 }
 
 type Humans struct {
-	HumanList map[string]*Human `json:"humans"`
+	HumanList []*Human `json:"humans"`
 }
 
-func (h *Humans) UnmarshalJSON(data []byte) error {
-	var s []*Human
+type HumanMap struct {
+	M map[string]*Human
+}
+
+func (h *HumanMap) UnmarshalJSON(data []byte) error {
+	var s Humans
 	err := json.Unmarshal(data, &s)
 	if err != nil {
 		return err
 	}
 
-	h.HumanList = make(map[string]*Human, len(s))
-	for i := range s {
-		human := s[i]
-		h.HumanList[human.ID] = human
+	h.M = make(map[string]*Human, len(s.HumanList))
+	for i := range s.HumanList {
+		human := s.HumanList[i]
+		h.M[human.ID] = human
 	}
 	return nil
 }
@@ -89,25 +97,29 @@ func (h *Humans) UnmarshalJSON(data []byte) error {
 type Human struct {
 	Character
 	Height    float64  `json:"Height"`
-	Mass      int      `json:"Mass"`
+	Mass      float64  `json:"Mass"`
 	Starships []string `json:"Starships"`
 }
 
 type Starships struct {
-	StarshipList map[string]*Starship `json:"starships"`
+	StarshipList []*Starship `json:"starships"`
 }
 
-func (ss *Starships) UnmarshalJSON(data []byte) error {
-	var s []*Starship
+type StarshipMap struct {
+	M map[string]*Starship
+}
+
+func (ss *StarshipMap) UnmarshalJSON(data []byte) error {
+	var s Starships
 	err := json.Unmarshal(data, &s)
 	if err != nil {
 		return err
 	}
 
-	ss.StarshipList = make(map[string]*Starship, len(s))
-	for i := range s {
-		starship := s[i]
-		ss.StarshipList[starship.ID] = starship
+	ss.M = make(map[string]*Starship, len(s.StarshipList))
+	for i := range s.StarshipList {
+		starship := s.StarshipList[i]
+		ss.M[starship.ID] = starship
 	}
 	return nil
 }
