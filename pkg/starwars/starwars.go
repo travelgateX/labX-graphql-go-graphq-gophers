@@ -55,16 +55,8 @@ func (d *Droids) UnmarshalJSON(data []byte) error {
 }
 
 type Droid struct {
-<<<<<<< HEAD
-	AppearsIn       []string      `json:"AppearsIn"`
-	Friends         *[]*Character `json:"Friends"`
-	ID              string        `json:"ID"`
-	Name            string        `json:"Name"`
-	PrimaryFunction string        `json:"PrimaryFunction"`
-=======
 	Character
 	PrimaryFunction string `json:"PrimaryFunction"`
->>>>>>> 6329494fb09c8529652197ec9bc49370b27d21c4
 }
 type Films struct {
 	FilimList []Film `json:"films"`
@@ -95,20 +87,10 @@ func (h *Humans) UnmarshalJSON(data []byte) error {
 }
 
 type Human struct {
-<<<<<<< HEAD
-	AppearsIn []string      `json:"AppearsIn"`
-	Friends   *[]*Character `json:"Friends"`
-	Height    float64       `json:"Height"`
-	ID        string        `json:"ID"`
-	Mass      int           `json:"Mass"`
-	Name      string        `json:"Name"`
-	Starships []string      `json:"Starships"`
-=======
 	Character
 	Height    float64  `json:"Height"`
 	Mass      int      `json:"Mass"`
 	Starships []string `json:"Starships"`
->>>>>>> 6329494fb09c8529652197ec9bc49370b27d21c4
 }
 
 type Starships struct {
